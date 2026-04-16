@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estatuto dos Direitos do Paciente — Guia para Hospitais</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --azul-escuro: #0b3d91;
+    --azul: #1565c0;
+    --azul-claro: #e3f2fd;
+    --verde: #2e7d32;
+    --vermelho: #c62828;
+    --cinza: #f5f7fa;
+    --cinza-escuro: #455a64;
+    --texto: #1a2332;
+    --borda: #d6e1ec;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--texto);
+    background: var(--cinza);
+    line-height: 1.6;
+  }
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--azul-escuro), var(--azul));
+    color: white;
+    padding: 40px 20px 30px;
+    text-align: center;
+  }
+  header h1 { font-size: 2em; margin-bottom: 8px; }
+  header .subtitulo { font-size: 1.05em; opacity: 0.92; }
+  header .lei-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    margin-top: 10px;
+  }
+  /* Navegação */
+  nav {
+    position: sticky;
+    top: 0;
+    background: white;
+    border-bottom: 1px solid var(--borda);
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  nav ul {
+    display: flex;
+    list-style: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+    padding: 0 10px;
+  }
+  nav a {
+    display: block;
+    padding: 14px 18px;
+    color: var(--cinza-escuro);
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: var(--azul); border-bottom-color: var(--azul-claro); }
+  /* Conteúdo */
+  main { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
+  section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  section.visible { opacity: 1; transform: translateY(0); }
+  section h2 {
+    color: var(--azul-escuro);
+    font-size: 1.6em;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--azul-claro);
+  }
+  section h3 { color: var(--azul); margin: 18px 0 8px; font-size: 1.15em; }
+  section p { margin-bottom: 12px; }
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+  .card {
+    background: var(--azul-claro);
+    border-left: 4px solid var(--azul);
+    border-radius: 8px;
+    padding: 18px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 4px 14px rgba(21,101,192,0.15); }
+  .card .icone { font-size: 1.8em; margin-bottom: 8px; }
+  .card h4 { color: var(--azul-escuro); margin-bottom: 6px; font-size: 1.05em; }
+  .card .detalhe {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    font-size: 0.92em;
+  }
+  .card.aberto .detalhe { max-height: 500px; padding-top: 10px; }
+  .card .artigo { display: inline-block; background: var(--azul); color: white; font-size: 0.75em; padding: 2px 8px; border-radius: 10px; margin-top: 8px; }
+  /* Obrigações */
+  .obrigacao-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px;
+    background: var(--cinza);
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .obrigacao-item::before {
+    content: "✓";
+    color: var(--verde);
+    font-weight: bold;
+    margin-right: 12px;
+    font-size: 1.2em;
+  }
+  /* Alerta penalidades */
+  .alerta {
+    background: #ffebee;
+    border-left: 4px solid var(--vermelho);
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+  }
+  .alerta strong { color: var(--vermelho); }
+  /* Quiz */
+  .quiz-progresso {
+    height: 8px;
+    background: var(--borda);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .quiz-progresso div {
+    height: 100%;
+    background: linear-gradient(90deg, var(--azul), var(--verde));
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .quiz-pergunta { font-size: 1.1em; font-weight: 500; margin-bottom: 14px; }
+  .quiz-opcao {
+    display: block;
+    padding: 12px 16px;
+    background: var(--cinza);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .quiz-opcao:hover { background: var(--azul-claro); border-color: var(--azul); }
+  .quiz-opcao.correta { background: #c8e6c9; border-color: var(--verde); }
+  .quiz-opcao.incorreta { background: #ffcdd2; border-color: var(--vermelho); }
+  .quiz-opcao.desabilitado { pointer-events: none; opacity: 0.7; }
+  .quiz-feedback { padding: 12px; border-radius: 8px; margin-top: 12px; display: none; }
+  .quiz-feedback.visivel { display: block; }
+  .quiz-feedback.acerto { background: #e8f5e9; color: var(--verde); }
+  .quiz-feedback.erro { background: #ffebee; color: var(--vermelho); }
+  .btn {
+    background: var(--azul);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    margin-top: 12px;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: var(--azul-escuro); }
+  .btn:disabled { background: #b0bec5; cursor: not-allowed; }
+  .resultado-quiz { text-align: center; padding: 20px; }
+  .resultado-quiz .pontos { font-size: 3em; color: var(--azul); font-weight: bold; }
+  /* FAQ */
+  .faq-filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .faq-filtro {
+    padding: 6px 14px;
+    border: 2px solid var(--borda);
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.88em;
+    transition: all 0.2s;
+  }
+  .faq-filtro:hover { border-color: var(--azul); }
+  .faq-filtro.ativo { background: var(--azul); color: white; border-color: var(--azul); }
+  .faq-item {
+    background: white;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .faq-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .faq-pergunta {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    user-select: none;
+  }
+  .faq-pergunta:hover { background: var(--cinza); }
+  .faq-tag {
+    font-size: 0.72em;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .faq-tag.polemica { background: #fff3e0; color: #e65100; }
+  .faq-tag.frequente { background: #e1f5fe; color: #01579b; }
+  .faq-seta { margin-left: auto; transition: transform 0.3s; color: var(--azul); font-size: 1.3em; flex-shrink: 0; }
+  .faq-item.aberto .faq-seta { transform: rotate(180deg); }
+  .faq-resposta {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 20px;
+    font-size: 0.95em;
+  }
+  .faq-item.aberto .faq-resposta { max-height: 800px; padding: 0 20px 18px; }
+  .faq-resposta .base {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: var(--azul-claro);
+    border-left: 3px solid var(--azul);
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--cinza-escuro);
+  }
+  /* Checklist */
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px;
+    background: var(--cinza);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .checklist-item:hover { background: var(--azul-claro); }
+  .checklist-item input[type="checkbox"] {
+    margin-right: 14px;
+    margin-top: 4px;
+    width: 20px;
+    height: 20px;
+    accent-color: var(--azul);
+    cursor: pointer;
+  }
+  .checklist-item.concluido { background: #e8f5e9; }
+  .checklist-item.concluido label { text-decoration: line-through; opacity: 0.75; }
+  .checklist-resumo {
+    background: var(--azul-escuro);
+    color: white;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .checklist-resumo .barra {
+    height: 10px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .checklist-resumo .barra div { height: 100%; background: #81d4fa; transition: width 0.3s; }
+  /* Footer */
+  footer {
+    background: var(--azul-escuro);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 0.9em;
+  }
+  footer p { margin-bottom: 8px; opacity: 0.9; }
+  /* Print */
+  @media print {
+    nav, header .lei-tag, .btn, footer { display: none; }
+    section { box-shadow: none; page-break-inside: avoid; }
+    body { background: white; }
+  }
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5em; }
+    section { padding: 20px; }
+    nav a { padding: 12px 14px; font-size: 0.82em; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏥 Estatuto dos Direitos do Paciente</h1>
+  <p class="subtitulo">Guia educativo sobre as responsabilidades de hospitais, clínicas e serviços de saúde</p>
+  <span class="lei-tag">Lei nº 15.378, de 6 de abril de 2026</span>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#apresentacao">Apresentação</a></li>
+    <li><a href="#direitos">Direitos do Paciente</a></li>
+    <li><a href="#obrigacoes">Obrigações do Hospital</a></li>
+    <li><a href="#penalidades">Penalidades</a></li>
+    <li><a href="#deveres">Deveres do Paciente</a></li>
+    <li><a href="#faq">FAQ & Polêmicas</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+    <li><a href="#checklist">Checklist</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="apresentacao">
+  <h2>📘 Sobre o Estatuto</h2>
+  <p>A <strong>Lei nº 15.378, sancionada em 6 de abril de 2026</strong>, institui o <strong>Estatuto dos Direitos do Paciente</strong> no Brasil. Trata-se do primeiro marco legal unificado que consolida, em um único texto, os direitos e as responsabilidades das pessoas sob cuidados de saúde.</p>
+  <h3>A quem se aplica</h3>
+  <p>O Estatuto vincula todos os serviços de saúde, <strong>sem exceção</strong>:</p>
+  <div class="cards" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+    <div class="card" style="cursor:default"><div class="icone">🏥</div><h4>Hospitais</h4><p>Públicos e privados</p></div>
+    <div class="card" style="cursor:default"><div class="icone">🩺</div><h4>Clínicas e Consultórios</h4><p>De qualquer especialidade</p></div>
+    <div class="card" style="cursor:default"><div class="icone">🧪</div><h4>Laboratórios</h4><p>E ambulatórios</p></div>
+    <div class="card" style="cursor:default"><div class="icone">📋</div><h4>Operadoras</h4><p>De planos de saúde</p></div>
+  </div>
+</section>
+
+<section id="direitos">
+  <h2>🛡️ Direitos do Paciente que o Hospital deve garantir</h2>
+  <p>Clique em cada card para ver os detalhes e o artigo correspondente da Lei.</p>
+  <div class="cards" id="cards-direitos"></div>
+</section>
+
+<section id="obrigacoes">
+  <h2>⚖️ Obrigações do Hospital</h2>
+  <p>Com base na Lei 15.378/2026, o hospital deve:</p>
+  <div id="lista-obrigacoes"></div>
+</section>
+
+<section id="penalidades">
+  <h2>⚠️ Consequências do Descumprimento</h2>
+  <div class="alerta">
+    <strong>Atenção:</strong> a violação aos direitos previstos no Estatuto é qualificada como situação contrária aos <strong>direitos humanos</strong>, nos termos da Lei nº 12.986/2014.
+  </div>
+  <h3>Possíveis consequências</h3>
+  <div id="lista-penalidades"></div>
+</section>
+
+<section id="deveres">
+  <h2>🤝 Deveres do Paciente</h2>
+  <p>O Estatuto também estabelece responsabilidades dos pacientes — é importante que a equipe hospitalar conheça para orientar adequadamente:</p>
+  <div id="lista-deveres"></div>
+</section>
+
+<section id="faq">
+  <h2>💬 Perguntas Frequentes & Polêmicas</h2>
+  <p>Dúvidas reais do dia a dia hospitalar sobre a Lei 15.378/2026 — incluindo os pontos mais controversos.</p>
+  <div class="faq-filtros">
+    <button class="faq-filtro ativo" data-filtro="todas">Todas</button>
+    <button class="faq-filtro" data-filtro="frequente">Frequentes</button>
+    <button class="faq-filtro" data-filtro="polemica">Polêmicas</button>
+  </div>
+  <div id="lista-faq"></div>
+</section>
+
+<section id="quiz">
+  <h2>🎯 Quiz: Teste seu Conhecimento</h2>
+  <p>Responda às perguntas a seguir sobre as responsabilidades do hospital perante a Lei 15.378/2026.</p>
+  <div class="quiz-progresso"><div id="barra-progresso"></div></div>
+  <div id="quiz-container"></div>
+</section>
+
+<section id="checklist">
+  <h2>✅ Checklist de Conformidade</h2>
+  <p>Use este checklist para verificar se seu hospital está em conformidade com o Estatuto. Seu progresso é salvo automaticamente.</p>
+  <div class="checklist-resumo">
+    <div><span id="check-texto">0 de 0 itens concluídos</span> — <strong id="check-porcentagem">0%</strong></div>
+    <div class="barra"><div id="check-barra"></div></div>
+  </div>
+  <div id="lista-checklist"></div>
+  <button class="btn" onclick="window.print()">🖨️ Imprimir / Salvar como PDF</button>
+  <button class="btn" style="background: var(--cinza-escuro); margin-left: 8px;" onclick="limparChecklist()">🔄 Reiniciar</button>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>Lei nº 15.378, de 6 de abril de 2026 — Estatuto dos Direitos do Paciente</strong></p>
+  <p>Este material é informativo e educativo, e não substitui orientação jurídica especializada.</p>
+  <p style="margin-top: 10px; font-size: 0.85em; opacity: 0.7;">Desenvolvido para capacitação de equipes hospitalares</p>
+</footer>
+
+<script>
+// ============ DADOS ============
+const direitos = [
+  { icone: "⏱️", titulo: "Cuidados de qualidade no tempo oportuno", detalhe: "O paciente tem direito a cuidados em saúde de qualidade, no tempo adequado, em instalações físicas limpas e adequadas, atendido por profissionais formados e capacitados.", artigo: "Art. 4º" },
+  { icone: "👥", titulo: "Acompanhante em consultas e internações", detalhe: "O paciente tem direito a acompanhante em consultas e internações, salvo quando o profissional responsável avaliar que a presença pode causar prejuízo à saúde, intimidade ou segurança. O acompanhante pode fazer perguntas sobre a segurança do paciente.", artigo: "Art. 6º" },
+  { icone: "📄", titulo: "Acesso ao prontuário", detalhe: "Acesso ao prontuário a qualquer momento, sem necessidade de justificativa, com direito a cópia gratuita, retificação e exigência de guarda segura.", artigo: "Art. 7º" },
+  { icone: "🧑‍⚖️", titulo: "Indicação de representante", detalhe: "O paciente pode indicar livremente um representante em qualquer momento dos cuidados em saúde, mediante registro no prontuário.", artigo: "Art. 8º" },
+  { icone: "🛡️", titulo: "Segurança assistencial", detalhe: "Direito a ambiente, procedimentos e insumos seguros. O paciente pode perguntar sobre higienização das mãos, local correto do procedimento cirúrgico e identificação do médico responsável.", artigo: "Art. 9º" },
+  { icone: "✍️", titulo: "Consentimento informado", detalhe: "Manifestação de vontade livre de coerção, após receber informação clara e detalhada sobre diagnóstico, prognóstico, tratamento e cuidados. O consentimento pode ser retirado a qualquer tempo sem represálias.", artigo: "Art. 10" },
+  { icone: "🔒", titulo: "Confidencialidade", detalhe: "Direito à confidencialidade das informações sobre saúde e dados pessoais, inclusive após a morte, salvo exceções legais. Dados e registros devem ser manuseados e arquivados preservando o sigilo.", artigo: "Art. 11" },
+  { icone: "❓", titulo: "Direito de perguntar", detalhe: "O paciente tem direito de realizar perguntas aos profissionais sobre higienização, procedimentos, identificação do responsável e contato.", artigo: "Art. 9º, §1º" }
+];
+
+const obrigacoes = [
+  "Garantir efetivamente todos os direitos previstos no Estatuto dos Direitos do Paciente",
+  "Manter instalações físicas limpas, seguras e adequadas ao atendimento",
+  "Contar com profissionais devidamente formados, capacitados e atualizados",
+  "Disponibilizar o prontuário ao paciente sem exigir justificativa, gratuitamente",
+  "Assegurar a confidencialidade e a guarda segura dos dados e registros dos pacientes",
+  "Permitir a presença de acompanhante nos termos da lei",
+  "Documentar adequadamente o consentimento informado para procedimentos",
+  "Disponibilizar canais efetivos de reclamação para pacientes e familiares",
+  "Cooperar com as pesquisas bienais sobre qualidade dos serviços exigidas pelo poder público",
+  "Divulgar ampla e periodicamente os direitos e deveres dos pacientes nas unidades",
+  "Adotar protocolos de segurança assistencial (higienização, identificação correta, verificação)",
+  "Capacitar continuamente a equipe sobre as disposições do Estatuto"
+];
+
+const penalidades = [
+  "Caracterização como violação a direitos humanos (Lei nº 12.986/2014)",
+  "Responsabilização cível (indenizações por danos materiais e morais)",
+  "Responsabilização administrativa perante órgãos reguladores (ANS, vigilância sanitária, conselhos profissionais)",
+  "Possibilidade de denúncias ao Conselho de Defesa dos Direitos da Pessoa Humana",
+  "Risco reputacional e de imagem institucional",
+  "Descredenciamento de redes e planos de saúde",
+  "Possíveis sanções criminais aos profissionais envolvidos, quando aplicável"
+];
+
+const deveres = [
+  "Seguir as orientações do profissional de saúde quanto ao medicamento prescrito e tratamento",
+  "Realizar perguntas e solicitar informações sempre que necessário",
+  "Assegurar que a instituição tenha cópia de suas diretivas antecipadas de vontade, quando houver",
+  "Indicar seu representante, se desejar",
+  "Informar sobre eventual desistência do tratamento",
+  "Cumprir as regras e normas dos serviços de saúde",
+  "Respeitar os direitos de outros pacientes e dos profissionais de saúde"
+];
+
+const faqItens = [
+  { tipo: "frequente", pergunta: "Um paciente exige cópia integral do prontuário. Posso cobrar pela reprodução?", resposta: "<strong>Não.</strong> O Estatuto garante cópia gratuita, sem ônus ao paciente, e independentemente de justificativa. Cobrar taxa de reprodução configura violação ao direito.", base: "Art. 7º da Lei 15.378/2026" },
+  { tipo: "polemica", pergunta: "E se o paciente quiser remover anotações do prontuário que considera ofensivas?", resposta: "O paciente pode <strong>solicitar retificação</strong>, mas o prontuário é documento médico-legal. A correção deve seguir protocolo: o profissional não apaga o registro original, mas acrescenta nota explicativa com data e assinatura. Se houver recusa justificada da equipe, o paciente pode recorrer aos órgãos reguladores.", base: "Art. 7º — direito à retificação" },
+  { tipo: "frequente", pergunta: "Posso recusar acompanhante em UTI ou centro cirúrgico?", resposta: "Somente quando o profissional responsável avaliar, de forma técnica e documentada, que a presença causa <strong>prejuízo à saúde, intimidade ou segurança</strong> do paciente ou de terceiros. A negativa genérica (\"regra da UTI\") não é mais suficiente — precisa de justificativa registrada em prontuário.", base: "Art. 6º" },
+  { tipo: "polemica", pergunta: "O paciente se recusa a tratamento que salvaria sua vida. O que fazer?", resposta: "O consentimento é livre e pode ser retirado a qualquer tempo, <strong>mesmo com risco à vida</strong>, desde que o paciente esteja consciente e capaz. A equipe deve: (1) informar detalhadamente as consequências, (2) documentar a recusa em termo específico, (3) respeitar a autonomia. Em emergência com paciente inconsciente, o consentimento é presumido.", base: "Art. 10 — consentimento informado e retirada" },
+  { tipo: "polemica", pergunta: "Familiares pedem para ocultar diagnóstico grave do paciente (\"conspiração do silêncio\"). Posso atender?", resposta: "<strong>Não.</strong> A titularidade da informação é do paciente, não da família. Omitir diagnóstico viola o direito à informação e ao consentimento informado. A equipe pode acolher a preocupação familiar, mas deve sempre garantir o acesso do paciente à verdade sobre sua condição, de forma humanizada.", base: "Art. 10 + Art. 11" },
+  { tipo: "frequente", pergunta: "Um familiar liga pedindo informações sobre o paciente. Posso repassar?", resposta: "Apenas se o paciente <strong>consentiu previamente</strong> com a revelação de informações a terceiros (incluindo familiares), preferencialmente por escrito ou registrado no prontuário. Sem consentimento, a informação é confidencial — mesmo para cônjuge, pais ou filhos, salvo exceções legais.", base: "Art. 11 — confidencialidade" },
+  { tipo: "polemica", pergunta: "Paciente menor de idade pode recusar tratamento indicado pelos pais?", resposta: "Questão sensível. O Estatuto não revoga regras do ECA ou do Código Civil sobre capacidade civil. A orientação prática: <strong>avaliar a capacidade de discernimento</strong> (adolescente maduro pode ter sua autonomia considerada em procedimentos reversíveis), envolver equipe multiprofissional e, em conflito grave com os pais, acionar o Ministério Público ou Vara da Infância.", base: "Art. 10 c/c legislação específica" },
+  { tipo: "frequente", pergunta: "Preciso manter cartaz com os direitos do paciente exposto?", resposta: "Sim. Cabe ao poder público assegurar a <strong>divulgação ampla e periódica</strong> dos direitos, e os hospitais devem cooperar. A prática recomendada é afixar cartazes visíveis nas recepções, enfermarias e salas de espera, além de disponibilizar material impresso.", base: "Mecanismos de cumprimento — divulgação" },
+  { tipo: "polemica", pergunta: "Testemunha de Jeová recusa transfusão. Como proceder?", resposta: "Adulto capaz pode recusar transfusão, mesmo com risco de morte — é exercício legítimo do consentimento informado e da liberdade religiosa. A equipe deve: documentar exaustivamente, oferecer alternativas terapêuticas, respeitar a decisão. <strong>Em menores ou incapazes</strong>, prevalece o dever de proteção à vida e deve-se acionar o Judiciário quando houver tempo, ou agir em emergência.", base: "Art. 10 + jurisprudência STF" },
+  { tipo: "frequente", pergunta: "O paciente quer gravar a consulta. É permitido?", resposta: "O Estatuto não trata expressamente do tema, mas a gravação pela própria pessoa envolvida na conversa é juridicamente válida no Brasil. Recomenda-se: <strong>não proibir</strong>, registrar a gravação no prontuário, e assegurar que informações de terceiros não sejam divulgadas.", base: "Interpretação sistemática — direito à informação" },
+  { tipo: "polemica", pergunta: "O Estatuto obriga o hospital a atender mesmo sem vaga ou sem pagamento?", resposta: "O Estatuto <strong>não cria</strong> direito a atendimento gratuito onde ele não existia. Mas reforça que, uma vez iniciado o atendimento (inclusive em emergência), o paciente tem direito a cuidados de qualidade. Recusa de atendimento emergencial por questão financeira pode configurar, além de violação ao Estatuto, crime de omissão de socorro.", base: "Art. 4º + CP art. 135" },
+  { tipo: "frequente", pergunta: "Como documentar o consentimento informado corretamente?", resposta: "Termo escrito, em linguagem <strong>clara e acessível</strong> (não pode ser apenas jargão médico), detalhando: diagnóstico, prognóstico, procedimento proposto, riscos, benefícios, alternativas e o que acontece se o paciente recusar. Deve ser assinado após tempo razoável para leitura e dúvidas. Anexar cópia ao prontuário.", base: "Art. 10" },
+  { tipo: "polemica", pergunta: "Paciente agressivo pode ser contido? Isso viola a lei?", resposta: "A contenção física ou química é <strong>medida excepcional</strong>, admitida apenas quando há risco iminente ao próprio paciente ou a terceiros, por tempo mínimo necessário, com prescrição médica, monitorização e registro detalhado. Contenção como punição ou rotina viola o Estatuto e pode caracterizar tortura.", base: "Art. 9º + legislação de saúde mental" },
+  { tipo: "frequente", pergunta: "Quem fiscaliza o cumprimento do Estatuto?", resposta: "O <strong>poder público</strong> (Ministério da Saúde, vigilâncias sanitárias, ANS para planos de saúde), somado aos conselhos profissionais, Ministério Público, Defensorias, Procons e ao Conselho de Defesa dos Direitos da Pessoa Humana. Pacientes também podem buscar diretamente a via judicial.", base: "Mecanismos de cumprimento" },
+  { tipo: "polemica", pergunta: "Diretivas antecipadas de vontade obrigam o hospital?", resposta: "Sim, desde que compatíveis com a lei e com a ética médica. O hospital deve <strong>guardar cópia</strong> quando apresentadas e respeitar a vontade do paciente sobre tratamentos em caso de incapacidade futura. Ignorar diretivas válidas expõe a instituição a responsabilização.", base: "Deveres do paciente + Art. 10" }
+];
+
+const perguntasQuiz = [
+  { pergunta: "Um paciente pode exigir acesso ao seu prontuário sem apresentar justificativa?", opcoes: ["Sim, a qualquer momento e gratuitamente", "Não, precisa justificar o pedido", "Apenas com autorização judicial", "Apenas mediante pagamento de taxa"], correta: 0, explicacao: "O Art. 7º garante acesso ao prontuário sem justificativa e com cópia gratuita." },
+  { pergunta: "O hospital pode negar a presença de acompanhante em qualquer situação?", opcoes: ["Sim, quando quiser", "Não, é direito absoluto", "Apenas quando o profissional avaliar prejuízo à saúde, intimidade ou segurança", "Somente em UTIs"], correta: 2, explicacao: "A negativa só é válida em casos específicos avaliados pelo profissional responsável." },
+  { pergunta: "Violações ao Estatuto podem ser enquadradas como violação a direitos humanos?", opcoes: ["Não, é apenas cível", "Sim, nos termos da Lei 12.986/2014", "Apenas em hospitais públicos", "Somente se houver morte"], correta: 1, explicacao: "O Estatuto remete expressamente à Lei 12.986/2014 sobre direitos humanos." },
+  { pergunta: "O paciente pode retirar o consentimento informado depois de dado?", opcoes: ["Não, é irrevogável", "Sim, a qualquer tempo e sem represálias", "Apenas antes do procedimento", "Somente com autorização do médico"], correta: 1, explicacao: "O consentimento pode ser retirado a qualquer tempo, sem qualquer represália." },
+  { pergunta: "A confidencialidade dos dados do paciente vigora:", opcoes: ["Apenas durante o tratamento", "Até a alta hospitalar", "Mesmo após a morte do paciente", "Apenas enquanto vivo"], correta: 2, explicacao: "A confidencialidade persiste inclusive após a morte, salvo exceções legais." },
+  { pergunta: "A lei se aplica a:", opcoes: ["Apenas hospitais públicos", "Apenas rede privada", "Hospitais, clínicas, laboratórios, ambulatórios e planos de saúde — públicos e privados", "Apenas o SUS"], correta: 2, explicacao: "O Estatuto alcança todos os serviços de saúde, públicos e privados." },
+  { pergunta: "O paciente pode indicar um representante:", opcoes: ["Apenas no momento da internação", "Somente se incapaz", "A qualquer momento, registrado no prontuário", "Apenas por procuração cartorial"], correta: 2, explicacao: "A indicação é livre, a qualquer tempo, mediante registro no prontuário." },
+  { pergunta: "Sobre segurança, o paciente tem direito a perguntar sobre:", opcoes: ["Apenas o diagnóstico", "Higienização das mãos, local do procedimento e identidade do médico", "Apenas o preço", "Nada — deve confiar na equipe"], correta: 1, explicacao: "O Art. 9º assegura o direito de perguntar sobre todos esses aspectos de segurança." }
+];
+
+const checklistItens = [
+  "Protocolo documentado para acesso gratuito ao prontuário",
+  "Política clara sobre permanência de acompanhantes",
+  "Canal de reclamação disponível e divulgado aos pacientes",
+  "Equipe treinada sobre os direitos do paciente",
+  "Política de confidencialidade de dados implementada e auditada",
+  "Modelos de termo de consentimento informado atualizados",
+  "Cartazes ou sinalização sobre direitos do paciente afixados nas unidades",
+  "Protocolo de segurança assistencial (higienização, identificação, time-out cirúrgico)",
+  "Procedimento para registro de representante do paciente no prontuário",
+  "Processo de acolhimento de diretivas antecipadas de vontade",
+  "Capacitação contínua dos profissionais sobre a Lei 15.378/2026",
+  "Registro e cooperação com pesquisas bienais de qualidade"
+];
+
+// ============ RENDERIZAÇÃO ============
+const cardsDireitos = document.getElementById("cards-direitos");
+direitos.forEach((d, i) => {
+  const el = document.createElement("div");
+  el.className = "card";
+  el.innerHTML = `<div class="icone">${d.icone}</div><h4>${d.titulo}</h4><div class="detalhe">${d.detalhe}<br><span class="artigo">${d.artigo}</span></div>`;
+  el.addEventListener("click", () => el.classList.toggle("aberto"));
+  cardsDireitos.appendChild(el);
+});
+
+const listaObrig = document.getElementById("lista-obrigacoes");
+obrigacoes.forEach(o => {
+  const el = document.createElement("div");
+  el.className = "obrigacao-item";
+  el.innerHTML = `<span>${o}</span>`;
+  listaObrig.appendChild(el);
+});
+
+const listaPen = document.getElementById("lista-penalidades");
+penalidades.forEach(p => {
+  const el = document.createElement("div");
+  el.className = "obrigacao-item";
+  el.style.background = "#ffebee";
+  el.innerHTML = `<span>${p}</span>`;
+  el.querySelector(":scope");
+  listaPen.appendChild(el);
+});
+// Ajustar ícone das penalidades
+document.querySelectorAll("#lista-penalidades .obrigacao-item").forEach(el => {
+  el.style.setProperty("--pen", "");
+});
+
+const listaDev = document.getElementById("lista-deveres");
+deveres.forEach(d => {
+  const el = document.createElement("div");
+  el.className = "obrigacao-item";
+  el.innerHTML = `<span>${d}</span>`;
+  listaDev.appendChild(el);
+});
+
+// ============ FAQ ============
+const listaFaq = document.getElementById("lista-faq");
+function renderFaq(filtro = "todas") {
+  listaFaq.innerHTML = "";
+  const itens = filtro === "todas" ? faqItens : faqItens.filter(f => f.tipo === filtro);
+  itens.forEach(f => {
+    const el = document.createElement("div");
+    el.className = "faq-item";
+    el.dataset.tipo = f.tipo;
+    const tagLabel = f.tipo === "polemica" ? "⚠️ Polêmica" : "📌 Frequente";
+    el.innerHTML = `
+      <div class="faq-pergunta">
+        <span class="faq-tag ${f.tipo}">${tagLabel}</span>
+        <span>${f.pergunta}</span>
+        <span class="faq-seta">⌄</span>
+      </div>
+      <div class="faq-resposta">
+        <p>${f.resposta}</p>
+        <div class="base">📖 ${f.base}</div>
+      </div>`;
+    el.querySelector(".faq-pergunta").addEventListener("click", () => el.classList.toggle("aberto"));
+    listaFaq.appendChild(el);
+  });
+}
+renderFaq();
+document.querySelectorAll(".faq-filtro").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".faq-filtro").forEach(b => b.classList.remove("ativo"));
+    btn.classList.add("ativo");
+    renderFaq(btn.dataset.filtro);
+  });
+});
+
+// ============ QUIZ ============
+let perguntaAtual = 0;
+let pontos = 0;
+const quizContainer = document.getElementById("quiz-container");
+const barraProgresso = document.getElementById("barra-progresso");
+
+function renderPergunta() {
+  if (perguntaAtual >= perguntasQuiz.length) {
+    quizContainer.innerHTML = `<div class="resultado-quiz">
+      <div class="pontos">${pontos}/${perguntasQuiz.length}</div>
+      <p style="margin:12px 0;">${pontos === perguntasQuiz.length ? "🏆 Excelente! Você domina o Estatuto." : pontos >= 6 ? "👏 Muito bom! Continue estudando." : "📚 Vale revisar os conteúdos acima."}</p>
+      <button class="btn" onclick="reiniciarQuiz()">🔄 Refazer Quiz</button>
+    </div>`;
+    barraProgresso.style.width = "100%";
+    return;
+  }
+  const p = perguntasQuiz[perguntaAtual];
+  barraProgresso.style.width = `${(perguntaAtual / perguntasQuiz.length) * 100}%`;
+  quizContainer.innerHTML = `
+    <div class="quiz-pergunta">${perguntaAtual + 1}. ${p.pergunta}</div>
+    ${p.opcoes.map((op, i) => `<div class="quiz-opcao" onclick="responder(${i})">${op}</div>`).join("")}
+    <div class="quiz-feedback" id="feedback"></div>
+    <button class="btn" id="btn-proximo" style="display:none;" onclick="proxima()">Próxima →</button>
+  `;
+}
+
+function responder(i) {
+  const p = perguntasQuiz[perguntaAtual];
+  const opcoes = document.querySelectorAll(".quiz-opcao");
+  opcoes.forEach(o => o.classList.add("desabilitado"));
+  opcoes[p.correta].classList.add("correta");
+  const feedback = document.getElementById("feedback");
+  if (i === p.correta) {
+    pontos++;
+    feedback.className = "quiz-feedback visivel acerto";
+    feedback.innerHTML = `✅ <strong>Correto!</strong> ${p.explicacao}`;
+  } else {
+    opcoes[i].classList.add("incorreta");
+    feedback.className = "quiz-feedback visivel erro";
+    feedback.innerHTML = `❌ <strong>Resposta correta:</strong> ${p.opcoes[p.correta]}. ${p.explicacao}`;
+  }
+  document.getElementById("btn-proximo").style.display = "inline-block";
+}
+
+function proxima() { perguntaAtual++; renderPergunta(); }
+function reiniciarQuiz() { perguntaAtual = 0; pontos = 0; renderPergunta(); }
+renderPergunta();
+
+// ============ CHECKLIST ============
+const listaCheck = document.getElementById("lista-checklist");
+const estadoSalvo = JSON.parse(localStorage.getItem("checklist-15378") || "{}");
+
+checklistItens.forEach((item, i) => {
+  const el = document.createElement("label");
+  el.className = "checklist-item";
+  const marcado = estadoSalvo[i] ? "checked" : "";
+  el.innerHTML = `<input type="checkbox" ${marcado} data-idx="${i}"><span>${item}</span>`;
+  if (estadoSalvo[i]) el.classList.add("concluido");
+  listaCheck.appendChild(el);
+});
+
+function atualizarChecklist() {
+  const checks = document.querySelectorAll("#lista-checklist input");
+  const total = checks.length;
+  let concluidos = 0;
+  const estado = {};
+  checks.forEach(c => {
+    const idx = c.dataset.idx;
+    estado[idx] = c.checked;
+    if (c.checked) concluidos++;
+    c.closest(".checklist-item").classList.toggle("concluido", c.checked);
+  });
+  localStorage.setItem("checklist-15378", JSON.stringify(estado));
+  const pct = Math.round((concluidos / total) * 100);
+  document.getElementById("check-texto").textContent = `${concluidos} de ${total} itens concluídos`;
+  document.getElementById("check-porcentagem").textContent = `${pct}%`;
+  document.getElementById("check-barra").style.width = `${pct}%`;
+}
+
+listaCheck.addEventListener("change", atualizarChecklist);
+atualizarChecklist();
+
+function limparChecklist() {
+  localStorage.removeItem("checklist-15378");
+  document.querySelectorAll("#lista-checklist input").forEach(c => c.checked = false);
+  atualizarChecklist();
+}
+
+// ============ SCROLL SUAVE ============
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const alvo = document.querySelector(link.getAttribute('href'));
+    if (alvo) alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ============ FADE-IN ============
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('section').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
