@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+ <script>
+  var senha = prompt("Este site é privado. Por favor, digite a senha:");
+  if (senha !== "1234") {
+    alert("Senha incorreta!");
+    window.location.href = "https://google.com"; // Manda o intruso embora
+  }
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Estatuto dos Direitos do Paciente — Guia para Hospitais</title>
